@@ -96,6 +96,28 @@ def send_serial_data(data):
         ser.write(char.encode())
         time.sleep(0.01)
 
+#send power command to OZS board
+def send_power_ozs(data):
+    print("send power cmd")
+    power = data['power']
+
+    if power == 'on':
+        send_serial_data("{power:on:}")
+    elif power == 'off':
+        send_serial_data("{power:off:}")
+
+    #start ozs
+    send_serial_data("{start:act:}")
+
+#send stop command to OZS board
+def send_stop_ozs(data):
+    print("send stop cmd")
+
+    send_serial_data("{stop:on:}")
+
+    #start ozs
+    send_serial_data("{start:act:}")
+
 #send start commmnd to OZS with data
 def send_start_ozs(start):
     print('start :', start)
@@ -153,27 +175,21 @@ def on_message_received(topic, payload, dup, qos, retain, **kwargs):
 
     try:
         if 'power' in data:
-            power_cmd = data['power']
-            if power_cmd == 'on':
-                GPIO.output(pin_18, True)
-                send_serial_data("{power:on:}")
-            elif power_cmd == 'off':
-                GPIO.output(pin_18, False)
-                send_serial_data("{power:off:}")
-            else:
-                print("Invalid switch command:", power_cmd)
-        elif 'wind' in data:
-            wind_speed = data['wind']
-            # Do something with wind speed, e.g., adjust fan speed
-            print("Wind speed:", wind_speed)
-            if wind_speed == '1':
-                send_serial_data("{wind:1:}")
-            elif wind_speed == '2':
-                send_serial_data("{wind:2:}")
-            elif wind_speed == '3':
-                send_serial_data("{wind:3:}")
-            else:
-                print("Invalid wind speed command: ", wind_speed)
+            send_power_ozs(data)
+
+        elif 'stop' in data:
+            send_stop_ozs(data)
+            # wind_speed = data['running']
+            # # Do something with wind speed, e.g., adjust fan speed
+            # print("Wind speed:", wind_speed)
+            # if wind_speed == '1':
+            #     send_serial_data("{wind:1:}")
+            # elif wind_speed == '2':
+            #     send_serial_data("{wind:2:}")
+            # elif wind_speed == '3':
+            #     send_serial_data("{wind:3:}")
+            # else:
+            #     print("Invalid wind speed command: ", wind_speed)
         elif 'duration' in data:
             duration = data['duration']
             # Do something with wind speed, e.g., adjust fan speed
