@@ -1,5 +1,6 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0.
+
+
+#2024-5-1 : aws iot 메인 프로그램. 
 
 from awscrt import mqtt, http
 from awsiot import mqtt_connection_builder
